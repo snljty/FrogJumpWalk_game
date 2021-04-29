@@ -5,6 +5,10 @@ r"""
 This is a game.
 """
 
+import os, sys
+import tkinter as tk
+from PIL import Image, ImageTk
+
 print("This program is a game of frogs jumping or walking.")
 print("")
 print("The frogs facing right can only go right.")
@@ -26,22 +30,37 @@ print("Click the 'Exit' button or press 'q' to exit.")
 print("Click the 'Reset' button or press 'r' to reset the game.")
 print("")
 
-print("Input the number of frogs on each side (default: 3): ")
-try:
-    nFrogs = int(input())
-except ValueError:
-    nFrogs = 3
-finally:
+nFrogsDef = 3
+while True:
+    if len(sys.argv) > 1:
+        if sys.argv[1].title() == "Default":
+            nFrogs = nFrogsDef
+            break
+        try:
+            nFrogs = int(sys.argv[1])
+            break
+        except ValueError:
+            print('Unrecognizable number of the first command argument "%s"' % sys.argv[1])
+            print("Please use the interactive mode.")
+    print("Input the number of frogs on each side.")
+    print("Press <Enter> directly to use default : %d.)" % nFrogsDef)
+    while True:
+        nFrogsStr = input()
+        if not nFrogsStr:
+            nFrogs = nFrogsDef
+            break
+        try:
+            nFrogs = int(nFrogsStr)
+            break
+        except ValueError:
+            print('Unrecognizable number "%s", please input again.' % nFrogsStr)
     print("")
-assert nFrogs > 0, 'At least one frog should be set!'
-
-import os, sys
-import tkinter as tk
-from PIL import Image, ImageTk
+    break
+assert nFrogs > 0, "At least one frog should be set!"
 
 window = tk.Tk()
-window.title('Frog Walk or Jump')
-window.geometry('%dx250' % (100 * (2 * nFrogs + 1)))
+window.title("Frog Walk or Jump")
+window.geometry("%dx250" % (100 * (2 * nFrogs + 1)))
 window.resizable(0, 0) 
 
 frameCanvas = tk.Frame(
@@ -78,10 +97,10 @@ canvas.place(
     anchor = tk.NW
 )
 
-# need to make sure 'frog.png' is under current folder.
-frogImagePath = os.path.join(os.path.dirname(sys.argv[0]), 'frog.png')
+# need to make sure "frog.png" is under current folder.
+frogImagePath = os.path.join(os.path.dirname(sys.argv[0]), "frog.png")
 if not os.path.isfile(frogImagePath):
-    raise ValueError("Error! Image '%s' not found." % frogImagePath)
+    raise ValueError('Error! Image "%s" not found.' % frogImagePath)
 imageRight = Image.open(frogImagePath)
 imageLeft  = imageRight.transpose(Image.FLIP_LEFT_RIGHT)
 imageTkRight = ImageTk.PhotoImage(image = imageRight)
@@ -90,9 +109,9 @@ imageTkLeft  = ImageTk.PhotoImage(image = imageLeft)
 def GenerateHint(n: int, reverse: bool = False) -> list:
     l = list()
     if reverse:
-        operators = ['-->', '<--', '->', '<-']
+        operators = ["-->", "<--", "->", "<-"]
     else:
-        operators = ['<--', '-->', '<-', '->']
+        operators = ["<--", "-->", "<-", "->"]
     for i in range(1, n + 1):
         for j in range(1, i + 1):
             if j == i:
@@ -135,7 +154,7 @@ def InitGame():
     blankPos = nFrogs
     nStep = 0 # the nth step of the correct movement
     solution = str()
-    hintInfo = '->/<-'
+    hintInfo = "->/<-"
     return
 
 InitGame()
@@ -159,7 +178,7 @@ def ResetGame():
     # reset current step
     nStep = 0
     solution = str()
-    hintInfo = '->/<-'
+    hintInfo = "->/<-"
     if labelHintText.get():
         labelHintText.set(hintInfo)
     return
@@ -177,17 +196,17 @@ def PrintFinishGame():
     global buttonHint, labelHintText, buttonReset, frameButton
     print("Congratulations! You finished the game successfully!")
     print("Close the GUI window to exit.")
-    frameButton.unbind(sequence = '<KeyPress-h>')
+    frameButton.unbind(sequence = "<KeyPress-h>")
     buttonHint.destroy()
-    frameButton.unbind(sequence = '<KeyPress-r>')
+    frameButton.unbind(sequence = "<KeyPress-r>")
     buttonReset.destroy()
-    labelHintText.set('Congratulations!')
+    labelHintText.set("Congratulations!")
     return
 
 def WalkRight():
     global board, blankPos, nFrogs, canvas, solution, nStep, hintInfo, labelHintText
     if (blankPos == 0) or (board[blankPos - 1] > nFrogs):
-        print('\a', end = '')
+        print("\a", end = "")
         return
     canvas.move(board[blankPos - 1], 100, 0)
     board[blankPos], board[blankPos - 1] = board[blankPos - 1], board[blankPos]
@@ -200,14 +219,14 @@ def WalkRight():
         if labelHintText.get():
             labelHintText.set(hintInfo)
     elif 1 < nStep < len(solution):
-        if hintInfo == '->':
+        if hintInfo == "->":
             hintInfo = solution[nStep]
             if labelHintText.get():
                 labelHintText.set(hintInfo)
         else:
             nStep = -1
             solution = str()
-            hintInfo = 'Reset'
+            hintInfo = "Reset"
             if labelHintText.get():
                 labelHintText.set(hintInfo)
     elif nStep == len(solution):
@@ -219,7 +238,7 @@ def WalkRight():
 def WalkLeft():
     global board, blankPos, nFrogs, canvas, solution, nStep, hintInfo, labelHintText
     if (blankPos == 2 * nFrogs) or (board[blankPos + 1] <= nFrogs):
-        print('\a', end = '')
+        print("\a", end = "")
         return
     canvas.move(board[blankPos + 1], -100, 0)
     board[blankPos], board[blankPos + 1] = board[blankPos + 1], board[blankPos]
@@ -232,14 +251,14 @@ def WalkLeft():
         if labelHintText.get():
             labelHintText.set(hintInfo)
     elif 1 < nStep < len(solution):
-        if hintInfo == '<-':
+        if hintInfo == "<-":
             hintInfo = solution[nStep]
             if labelHintText.get():
                 labelHintText.set(hintInfo)
         else:
             nStep = -1
             solution = str()
-            hintInfo = 'Reset'
+            hintInfo = "Reset"
             if labelHintText.get():
                 labelHintText.set(hintInfo)
     elif nStep == len(solution):
@@ -251,7 +270,7 @@ def WalkLeft():
 def JumpRight():
     global board, blankPos, nFrogs, canvas, solution, nStep, hintInfo, labelHintText
     if (blankPos <= 1) or (board[blankPos - 2] > nFrogs):
-        print('\a', end = '')
+        print("\a", end = "")
         return
     canvas.move(board[blankPos - 2], 200, 0)
     board[blankPos], board[blankPos - 2] = board[blankPos - 2], board[blankPos]
@@ -261,18 +280,18 @@ def JumpRight():
     if nStep == 1:
         nStep = -1
         solution = str()
-        hintInfo = 'Reset'
+        hintInfo = "Reset"
         if labelHintText.get():
             labelHintText.set(hintInfo)
     elif 1 < nStep < len(solution):
-        if hintInfo == '-->':
+        if hintInfo == "-->":
             hintInfo = solution[nStep]
             if labelHintText.get():
                 labelHintText.set(hintInfo)
         else:
             nStep = -1
             solution = str()
-            hintInfo = 'Reset'
+            hintInfo = "Reset"
             if labelHintText.get():
                 labelHintText.set(hintInfo)
     elif nStep == len(solution):
@@ -284,7 +303,7 @@ def JumpRight():
 def JumpLeft():
     global board, blankPos, nFrogs, canvas, solution, nStep, hintInfo, labelHintText
     if (blankPos >= 2 * nFrogs - 1) or (board[blankPos + 2] <= nFrogs):
-        print('\a', end = '')
+        print("\a", end = "")
         return
     canvas.move(board[blankPos + 2], -200, 0)
     board[blankPos], board[blankPos + 2] = board[blankPos + 2], board[blankPos]
@@ -294,18 +313,18 @@ def JumpLeft():
     if nStep == 1:
         nStep = -1
         solution = str()
-        hintInfo = 'Reset'
+        hintInfo = "Reset"
         if labelHintText.get():
             labelHintText.set(hintInfo)
     elif 1 < nStep < len(solution):
-        if hintInfo == '<--':
+        if hintInfo == "<--":
             hintInfo = solution[nStep]
             if labelHintText.get():
                 labelHintText.set(hintInfo)
         else:
             nStep = -1
             solution = str()
-            hintInfo = 'Reset'
+            hintInfo = "Reset"
             if labelHintText.get():
                 labelHintText.set(hintInfo)
     elif nStep == len(solution):
@@ -316,28 +335,28 @@ def JumpLeft():
 
 buttonWalkRight = tk.Button(
     master = frameButton, 
-    text = '(f)Walk->', 
+    text = "(f)Walk->", 
     width = 10, 
     height = 2, 
     command = WalkRight
 )
 buttonWalkLeft = tk.Button(
     master = frameButton, 
-    text = '<-Walk(j)', 
+    text = "<-Walk(j)", 
     width = 10, 
     height = 2, 
     command = WalkLeft
 )
 buttonJumpRight = tk.Button(
     master = frameButton, 
-    text = '(d)Jump-->', 
+    text = "(d)Jump-->", 
     width = 10, 
     height = 2, 
     command = JumpRight
 )
 buttonJumpLeft = tk.Button(
     master = frameButton, 
-    text = '<--Jump(k)', 
+    text = "<--Jump(k)", 
     width = 10, 
     height = 2, 
     command = JumpLeft
@@ -398,7 +417,7 @@ def HintShowHide():
 
 buttonHint = tk.Button(
     master = frameButton, 
-    text = 'Hint(h)', 
+    text = "Hint(h)", 
     width = 10, 
     height = 2, 
     command = HintShowHide
@@ -411,7 +430,7 @@ buttonHint.place(
 
 buttonReset = tk.Button(
     master = frameButton, 
-    text = 'Reset(r)', 
+    text = "Reset(r)", 
     width = 10, 
     height = 2, 
     command = ResetGame
@@ -424,7 +443,7 @@ buttonReset.place(
 
 buttonExit = tk.Button(
     master = frameButton, 
-    text = 'Exit(q)', 
+    text = "Exit(q)", 
     width = 10, 
     height = 2, 
     command = window.destroy
@@ -436,31 +455,31 @@ buttonExit.place(
 )
 
 frameButton.bind(
-    sequence = '<KeyPress-f>', 
+    sequence = "<KeyPress-f>", 
     func = lambda event: WalkRight()
 )
 frameButton.bind(
-    sequence = '<KeyPress-j>', 
+    sequence = "<KeyPress-j>", 
     func = lambda event: WalkLeft()
 )
 frameButton.bind(
-    sequence = '<KeyPress-d>', 
+    sequence = "<KeyPress-d>", 
     func = lambda event: JumpRight()
 )
 frameButton.bind(
-    sequence = '<KeyPress-k>', 
+    sequence = "<KeyPress-k>", 
     func = lambda event: JumpLeft()
 )
 frameButton.bind(
-    sequence = '<KeyPress-r>', 
+    sequence = "<KeyPress-r>", 
     func = lambda event: ResetGame()
 )
 frameButton.bind(
-    sequence = '<KeyPress-q>', 
+    sequence = "<KeyPress-q>", 
     func = lambda event: window.destroy()
 )
 frameButton.bind(
-    sequence = '<KeyPress-h>', 
+    sequence = "<KeyPress-h>", 
     func = lambda event: HintShowHide()
 )
 frameButton.focus_set()

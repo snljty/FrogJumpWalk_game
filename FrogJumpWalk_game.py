@@ -43,7 +43,7 @@ while True:
             print('Unrecognizable number of the first command argument "%s"' % sys.argv[1])
             print("Please use the interactive mode.")
     print("Input the number of frogs on each side.")
-    print("Press <Enter> directly to use default : %d.)" % nFrogsDef)
+    print("Press <Enter> directly to use default : %d." % nFrogsDef)
     while True:
         nFrogsStr = input()
         if not nFrogsStr:

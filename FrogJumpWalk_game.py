@@ -200,6 +200,14 @@ def PrintFinishGame():
     buttonHint.destroy()
     frameButton.unbind(sequence = "<KeyPress-r>")
     buttonReset.destroy()
+    frameButton.unbind(sequence = "<KeyPress-f>")
+    buttonWalkRight.destroy()
+    frameButton.unbind(sequence = "<KeyPress-j>")
+    buttonWalkLeft.destroy()
+    frameButton.unbind(sequence = "<KeyPress-d>")
+    buttonJumpRight.destroy()
+    frameButton.unbind(sequence = "<KeyPress-k>")
+    buttonJumpLeft.destroy()
     labelHintText.set("Congratulations!")
     return
 

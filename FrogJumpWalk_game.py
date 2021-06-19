@@ -31,14 +31,20 @@ print("Click the 'Reset' button or press 'r' to reset the game.")
 print("")
 
 nFrogsDef = 3
+argc = len(sys.argv)
 while True:
-    if len(sys.argv) > 1:
+    if argc > 2:
+        print("At most 1 command argument should be provided, but got %d." % (argc - 1))
+        print("Please use the interactive mode.")
+    if argc == 2:
         if sys.argv[1].title() == "Default":
             nFrogs = nFrogsDef
             break
         try:
             nFrogs = int(sys.argv[1])
-            break
+            if nFrogs > 0: break
+            print("At least one frog is needed to be set, but got %d." % nFrogs)
+            print("Please use the interactive mode.")
         except ValueError:
             print('Unrecognizable number of the first command argument "%s"' % sys.argv[1])
             print("Please use the interactive mode.")
@@ -56,7 +62,7 @@ while True:
             print('Unrecognizable number "%s", please input again.' % nFrogsStr)
     print("")
     break
-assert nFrogs > 0, "At least one frog should be set!"
+assert nFrogs > 0, "At least one frog is needed to be set!"
 
 window = tk.Tk()
 window.title("Frog Walk or Jump")

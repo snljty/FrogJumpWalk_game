@@ -6,9 +6,11 @@
 # ifdef linux
   # include <termio.h>
   int getch();
+  # define stricmp_unity(str1, str2) strcasecmp(str1, str2)
 # else
   # ifdef WIN32
     # include <conio.h>
+    # define stricmp_unity(str1, str2) stricmp(str1, str2)
   # endif
 # endif
 
@@ -97,18 +99,24 @@ unsigned int AcquireSize(int argc, char const *argv[])
 
   for (;;)
   {
-    if (argc > 1)
+    if (argc > 2)
     {
-      if (! strcmp(argv[1], "default"))
+      printf("At most 1 command argument should be provided, but got %d.\n", (argc - 1));
+      puts("Please use the interactive mode.");
+    }
+    else if (argc == 2)
+    {
+      if (! stricmp_unity(argv[1], "default"))
       {
         nFrogs = nFrogsDef;
         break;
       }
       if (sscanf(argv[1], "%u", & nFrogs) == 1)
       {
-        if (nFrogs)
+        if ((int)nFrogs > 0)
           break;
-        puts("There should be at least one frog, please use the interactive mode.");
+        printf("A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
+        puts("Please use the interactive mode.");
       }
       else
         printf("Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);

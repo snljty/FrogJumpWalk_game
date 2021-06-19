@@ -2,6 +2,7 @@
 # include <stdlib.h>
 # include <string.h>
 # include <stdbool.h>
+# include <ctype.h>
 
 /*  This program show solutions of the game frog_walk_or_jump.  */
 
@@ -10,7 +11,6 @@ int main(int argc, char const *argv[])
   unsigned int nFrogs = 0;
   const char c[] = {'A', 'B'};
   unsigned int i = 0, j = 0;
-  const int plusToLower = (int)'a' - (int)'A';
   char pauser = '\0';
   unsigned int const nFrogsDef = 3;
   char buf[BUFSIZ + 1] = "";
@@ -18,9 +18,14 @@ int main(int argc, char const *argv[])
 
   for (;;)
   {
-    if (argc > 1)
+    if (argc > 2)
     {
-      if (! strcmp(argv[1], "default"))
+      printf("At most 1 command argument should be provided, but got %d.\n", (argc - 1));
+      puts("Please use the interactive mode.");
+    }
+    else if (argc == 2)
+    {
+      if (! strcasecmp(argv[1], "default"))
       {
         nFrogs = nFrogsDef;
         isInteractiveMode = false;
@@ -28,10 +33,16 @@ int main(int argc, char const *argv[])
       }
       if (sscanf(argv[1], "%u", & nFrogs) == 1)
       {
-        isInteractiveMode = false;
-        break;
+        if ((int)nFrogs > 0)
+        {
+          isInteractiveMode = false;
+          break;
+        }
+        printf("A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
+        puts("Please use the interactive mode.");
       }
-      printf("Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
+      else
+        printf("Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
     }
     printf("Input the number of frogs on each side.\n");
     printf("Press <Enter> directly to use the default value: %u.\n", nFrogsDef);
@@ -60,7 +71,7 @@ int main(int argc, char const *argv[])
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        putchar(c[! (i % 2)] + plusToLower);
+        putchar(tolower(c[! (i % 2)]));
       else
         putchar(c[! (i % 2)]);
   for (j = 1; j <= nFrogs; j ++)
@@ -68,7 +79,7 @@ int main(int argc, char const *argv[])
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        putchar(c[! (i % 2)] + plusToLower);
+        putchar(tolower(c[! (i % 2)]));
       else
         putchar(c[! (i % 2)]);
   putchar('\n');
@@ -76,7 +87,7 @@ int main(int argc, char const *argv[])
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        putchar(c[i % 2] + plusToLower);
+        putchar(tolower(c[i % 2]));
       else
         putchar(c[i % 2]);
   for (j = 1; j <= nFrogs; j ++)
@@ -84,7 +95,7 @@ int main(int argc, char const *argv[])
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        putchar(c[i % 2] + plusToLower);
+        putchar(tolower(c[i % 2]));
       else
         putchar(c[i % 2]);
   putchar('\n');

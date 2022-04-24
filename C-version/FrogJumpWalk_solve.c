@@ -2,14 +2,14 @@
 # include <stdlib.h>
 # include <string.h>
 # include <stdbool.h>
-# include <ctype.h>
 
 /*  This program show solutions of the game frog_walk_or_jump.  */
 
 int main(int argc, char const *argv[])
 {
   unsigned int nFrogs = 0;
-  const char c[] = {'A', 'B'};
+  char const jump[] = {'d', 'k'};
+  char const walk[] = {'f', 'j'};
   unsigned int i = 0, j = 0;
   char pauser = '\0';
   unsigned int const nFrogsDef = 3;
@@ -38,11 +38,11 @@ int main(int argc, char const *argv[])
           isInteractiveMode = false;
           break;
         }
-        printf("A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
-        puts("Please use the interactive mode.");
+        fprintf(stderr, "A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
+        fprintf(stderr, "Please use the interactive mode.\n");
       }
       else
-        printf("Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
+        fprintf(stderr, "Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
     }
     printf("Input the number of frogs on each side.\n");
     printf("Press <Enter> directly to use the default value: %u.\n", nFrogsDef);
@@ -58,51 +58,51 @@ int main(int argc, char const *argv[])
       }
       if (sscanf(buf, "%u", & nFrogs) == 1)
         break;
-      printf("Unrecognizable number \"%s\", please input again.\n", buf);
+      fprintf(stderr, "Unrecognizable number \"%s\", please input again.\n", buf);
     }  
     break;
   }
   
-  puts("");
-  puts("a/A for left side and b/B for right side.");
-  puts("Upper letters for jumping and lower letters for walking.");
-  puts("");
+  printf("\n");
+  printf("f/d for left side and j/k for right side.\n");
+  printf("d/k for jumping and f/j for walking.\n");
+  printf("\n");
 
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        putchar(tolower(c[! (i % 2)]));
+        printf("%c", walk[! (i % 2)]);
       else
-        putchar(c[! (i % 2)]);
+        printf("%c", jump[! (i % 2)]);
   for (j = 1; j <= nFrogs; j ++)
-    putchar(c[nFrogs % 2]);
+    printf("%c", jump[nFrogs % 2]);
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        putchar(tolower(c[! (i % 2)]));
+        printf("%c", walk[! (i % 2)]);
       else
-        putchar(c[! (i % 2)]);
-  putchar('\n');
+        printf("%c", jump[! (i % 2)]);
+  printf("\n");
 
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        putchar(tolower(c[i % 2]));
+        printf("%c", walk[i % 2]);
       else
-        putchar(c[i % 2]);
+        printf("%c", jump[i % 2]);
   for (j = 1; j <= nFrogs; j ++)
-    putchar(c[! (nFrogs % 2)]);
+    printf("%c", jump[! (nFrogs % 2)]);
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        putchar(tolower(c[i % 2]));
+        printf("%c", walk[i % 2]);
       else
-        putchar(c[i % 2]);
-  putchar('\n');
+        printf("%c", jump[i % 2]);
+  printf("\n");
 
   if (isInteractiveMode)
   {
-    puts("\nPress <Enter> to exit...");
+    printf("\nPress <Enter> to exit...\n");
     while ((pauser = getchar()) != '\n' && pauser != EOF)
       ;
   }

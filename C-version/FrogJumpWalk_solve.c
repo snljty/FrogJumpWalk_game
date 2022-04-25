@@ -20,8 +20,8 @@ int main(int argc, char const *argv[])
   {
     if (argc > 2)
     {
-      printf("At most 1 command argument should be provided, but got %d.\n", (argc - 1));
-      puts("Please use the interactive mode.");
+      fprintf(stderr, "At most 1 command argument should be provided, but got %d.\n", (argc - 1));
+      fprintf(stderr, "Please use the interactive mode.\n");
     }
     else if (argc == 2)
     {

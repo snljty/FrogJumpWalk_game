@@ -28,6 +28,8 @@ bool IsFinished(char *board, unsigned int nFrogs);
 
 void ResetBoard(char *board, unsigned int nFrogs, unsigned int *posBlankPointer);
 
+void PauseGame(void);
+
 void PrintBoard(char *board);
 
 void PrintEndGame(void);
@@ -71,23 +73,23 @@ void SwapChar(char *p, char *q)
 
 void PrintHint(void)
 {
-  puts("This program is a game of frogs jumping or walking.");
-  puts("");
-  puts("The frogs '>' are heading right, and can only go right.");
-  puts("The frogs '<' are heading  left, and can only go  left.");
-  puts("'_' is a blank position.");
-  puts("If a frog is on the side of the blank position, ");
-  puts("Then it can walk to the blank, ");
-  puts("as long as it is on the correct direction.");
-  puts("Or if a frog is separated by another frog from the blank, ");
-  puts("it can jump over to the blank if in the correct direction.");
-  puts("");
-  puts("Your aim is to swap the positions of all frogs '>' and '<'.");
-  puts("Press 'f' to walk a frog right, 'd' to jump a frog right, ");
-  puts("'j' to walf a frog right, 'k' to jump a frog left, ");
-  puts("and 'r' to reset the game.");
-  puts("Press <Enter> to exit.");
-  puts("");
+  printf("This program is a game of frogs jumping or walking.\n");
+  printf("\n");
+  printf("The frogs '>' are heading right, and can only go right.\n");
+  printf("The frogs '<' are heading  left, and can only go  left.\n");
+  printf("'_' is a blank position.\n");
+  printf("If a frog is on the side of the blank position, \n");
+  printf("Then it can walk to the blank, \n");
+  printf("as long as it is on the correct direction.\n");
+  printf("Or if a frog is separated by another frog from the blank, \n");
+  printf("it can jump over to the blank if in the correct direction.\n");
+  printf("\n");
+  printf("Your aim is to swap the positions of all frogs '>' and '<'.\n");
+  printf("Press 'f' to walk a frog right, 'd' to jump a frog right, \n");
+  printf("'j' to walf a frog right, 'k' to jump a frog left, \n");
+  printf("and 'r' to reset the game.\n");
+  printf("Press <Enter> to exit.\n");
+  printf("\n");
 }
 
 unsigned int AcquireSize(int argc, char const *argv[])
@@ -101,8 +103,8 @@ unsigned int AcquireSize(int argc, char const *argv[])
   {
     if (argc > 2)
     {
-      printf("At most 1 command argument should be provided, but got %d.\n", (argc - 1));
-      puts("Please use the interactive mode.");
+      fprintf(stderr, "At most 1 command argument should be provided, but got %d.\n", (argc - 1));
+      fprintf(stderr, "Please use the interactive mode.\n");
     }
     else if (argc == 2)
     {
@@ -115,11 +117,11 @@ unsigned int AcquireSize(int argc, char const *argv[])
       {
         if ((int)nFrogs > 0)
           break;
-        printf("A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
-        puts("Please use the interactive mode.");
+        fprintf(stderr, "A positive number for amount of frogs is required, but got %d.\n", (int)nFrogs);
+        fprintf(stderr, "Please use the interactive mode.\n");
       }
       else
-        printf("Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
+        fprintf(stderr, "Unrecognizable number \"%s\", please use the interactive mode.\n", argv[1]);
     }
     printf("Input the number of frogs on each side.\n");
     printf("Press <Enter> directly to use the default value: %u.\n", nFrogsDef);
@@ -137,15 +139,15 @@ unsigned int AcquireSize(int argc, char const *argv[])
       {
         if (nFrogs)
           break;
-        puts("There should be at least one frog, please input again.");
+        fprintf(stderr, "There should be at least one frog, please input again.\n");
       }
       else
-        printf("Unrecognizable number \"%s\", please input again.\n", buf);
+        fprintf(stderr, "Unrecognizable number \"%s\", please input again.\n", buf);
     }  
     break;
   }
-  puts("");
-  puts("");
+  printf("\n");
+  printf("\n");
 
   return nFrogs;
 }
@@ -192,6 +194,16 @@ bool IsFinished(char *board, unsigned int nFrogs)
   return true;
 }
 
+void PauseGame(void)
+{
+  char c;
+
+  while ((c = getchar()) != '\n' && c != EOF)
+    ;
+
+  return;
+}
+
 void PrintBoard(char *board)
 {
   unsigned int i = 0;
@@ -205,30 +217,30 @@ void PrintBoard(char *board)
       break;
     if (board[i] == '_')
       posBlank = i;
-    putchar(board[i]);
+    printf("%c", board[i]);
     ++ i;
   }
   for (j = i; j > posBlank; -- j)
-    putchar('\b');
+    printf("%c", '\b');
 
   return;
 }
 
 void PrintEndGame(void)
 {
-  putchar('\n');
-  puts("Game ended. Press <Enter> to exit.");
-  getchar();
+  printf("\n");
+  printf("Game ended. Press <Enter> to exit.\n");
+  PauseGame();
 
   return;
 }
 
 void PrintFinishGame(void)
 {
-  putchar('\n');
-  puts("Congratulations! You finished the game successfully!");
-  puts("Press <Enter> to exit.");
-  getchar();
+  printf("\n");
+  printf("Congratulations! You finished the game successfully!\n");
+  printf("Press <Enter> to exit.\n");
+  PauseGame();
 
   return;
 }
@@ -251,7 +263,7 @@ void RunGame(char *board, unsigned int nFrogs)
     case 'f': /*  walk right  */
       if ((posBlank == 0) || (board[posBlank - 1] != '>'))
       {
-        putchar('\a');
+        printf("\a");
         break;
       }
       ichanged = true;
@@ -261,7 +273,7 @@ void RunGame(char *board, unsigned int nFrogs)
     case 'j': /*  walk left  */
       if ((posBlank == 2 * nFrogs) || (board[posBlank + 1] != '<'))
       {
-        putchar('\a');
+        printf("\a");
         break;
       }
       ichanged = true;
@@ -271,7 +283,7 @@ void RunGame(char *board, unsigned int nFrogs)
     case 'd': /*  jump right  */
       if ((posBlank <= 1) || (board[posBlank - 2] != '>'))
       {
-        putchar('\a');
+        printf("\a");
         break;
       }
       ichanged = true;
@@ -281,7 +293,7 @@ void RunGame(char *board, unsigned int nFrogs)
     case 'k': /*  walk left  */
       if ((posBlank >= 2 * nFrogs - 1) || (board[posBlank + 2] != '<'))
       {
-        putchar('\a');
+        printf("\a");
         break;
       }
       ichanged = true;

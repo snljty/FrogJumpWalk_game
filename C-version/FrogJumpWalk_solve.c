@@ -5,11 +5,20 @@
 
 /*  This program show solutions of the game frog_walk_or_jump.  */
 
+/*  # define PRINT_WITH_COLOR  */
+
+# define COLOR_RED   0x01
+# define COLOR_GREEN 0x02
+# define COLOR_BLUE  0x04
+
+char const jump[] = {'d', 'k'};
+char const walk[] = {'f', 'j'};
+
+void Print_symbol(char const *operation, int index);
+
 int main(int argc, char const *argv[])
 {
   unsigned int nFrogs = 0;
-  char const jump[] = {'d', 'k'};
-  char const walk[] = {'f', 'j'};
   unsigned int i = 0, j = 0;
   char pauser = '\0';
   unsigned int const nFrogsDef = 3;
@@ -67,37 +76,38 @@ int main(int argc, char const *argv[])
   printf("f/d for left side and j/k for right side.\n");
   printf("d/k for jumping and f/j for walking.\n");
   printf("\n");
+  system("");
 
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        printf("%c", walk[! (i % 2)]);
+        Print_symbol(walk, ! (i % 2));
       else
-        printf("%c", jump[! (i % 2)]);
+        Print_symbol(jump, ! (i % 2));
   for (j = 1; j <= nFrogs; j ++)
-    printf("%c", jump[nFrogs % 2]);
+    Print_symbol(jump, nFrogs % 2);
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        printf("%c", walk[! (i % 2)]);
+        Print_symbol(walk, ! (i % 2));
       else
-        printf("%c", jump[! (i % 2)]);
+        Print_symbol(jump, ! (i % 2));
   printf("\n");
 
   for (i = 1; i <= nFrogs; i ++)
     for (j = 1; j <= i; j ++)
       if (j == i)
-        printf("%c", walk[i % 2]);
+        Print_symbol(walk, i % 2);
       else
-        printf("%c", jump[i % 2]);
+        Print_symbol(jump, i % 2);
   for (j = 1; j <= nFrogs; j ++)
-    printf("%c", jump[! (nFrogs % 2)]);
+    Print_symbol(jump, ! (nFrogs % 2));
   for (i = nFrogs; i >= 1; i --)
     for (j = i; j >= 1; j --)
       if (j == i)
-        printf("%c", walk[i % 2]);
+        Print_symbol(walk, i % 2);
       else
-        printf("%c", jump[i % 2]);
+        Print_symbol(jump, i % 2);
   printf("\n");
 
   if (isInteractiveMode)
@@ -108,5 +118,21 @@ int main(int argc, char const *argv[])
   }
 
   return 0;
+}
+
+void Print_symbol(char const *operation, int index)
+{
+  # ifdef PRINT_WITH_COLOR
+  if (operation == walk)
+    printf("\e[3%dm", ! index ? COLOR_RED : COLOR_BLUE);
+  else if (operation == jump)
+    printf("\e[3%d;47m", ! index ? COLOR_RED : COLOR_BLUE);
+  # endif
+  printf("%c", operation[index]);
+  # ifdef PRINT_WITH_COLOR
+  printf("\e[0m");
+  # endif
+
+  return;
 }
 

@@ -3,6 +3,8 @@
 # include <string.h>
 # include <stdbool.h>
 
+/*  # define PRINT_WITH_COLOR  */
+
 # ifdef linux
   # include <termio.h>
   int getch();
@@ -164,6 +166,7 @@ char *InitializeBoard(unsigned int nFrogs)
   board[nFrogs] = '_';
   for (i = nFrogs + 1; i <= 2 * nFrogs; i ++)
     board[i] = '<';
+  system("");
 
   return board;
 }
@@ -210,14 +213,23 @@ void PrintBoard(char *board)
   unsigned int posBlank = 0;
   unsigned int j = 0;
 
-  putchar('\r');
-  for (;;)
+  printf("%c", '\r');
+  while (board[i])
   {
-    if (! board[i])
-      break;
     if (board[i] == '_')
       posBlank = i;
+    # ifdef PRINT_WITH_COLOR
+      if (board[i] == '>')
+        printf("\e[31m");
+      else if (board[i] == '<')
+        printf("\e[34m");
+      else
+        printf("\e[32m");
+    # endif
     printf("%c", board[i]);
+    # ifdef PRINT_WITH_COLOR
+      printf("\e[0m");
+    # endif
     ++ i;
   }
   for (j = i; j > posBlank; -- j)

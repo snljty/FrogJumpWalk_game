@@ -1,7 +1,6 @@
 SHELL = cmd
 CC = gcc
 CLINKER = $(CC)
-DEFINE = PRINT_WITH_COLOR
 
 .PHONY: all
 all: FrogJumpWalk_game.exe FrogJumpWalk_solve.exe
@@ -12,7 +11,7 @@ all: FrogJumpWalk_game.exe FrogJumpWalk_solve.exe
 
 %.obj: %.c
 	@echo Compiling $@ from $< ...
-	$(CC) -o $@ -c $< -D $(DEFINE) -static -s
+	$(CC) -o $@ -c $< -static -s
 
 clean: clean
 	-del /q *.exe 2> NUL
